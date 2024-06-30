@@ -1,0 +1,148 @@
+// To be added in package.json to add nodemon and dotenv to npm run dev.
+
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+
+  // Nodeman watches any changes and restart backend on any change
+  // experimental-json-modules: it allows to use experimental features of npm like using import to import dotenv.(or use require syntax)
+
+---------------------------------------------------
+
+//mongoose.connect to connect to database
+
+  const conectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
+  console.log(`MongoDb Connected , {conectionInstance}`)
+
+  // takes out uri/url of database and adds name to it which is provided locally in constants.js
+
+--------------------------------------------------
+
+//this is from mongoDB Atlas
+
+  MONGODB_URI = mongodb+srv://vaibhavx:<password>@cluster0.lnz3b85.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+  // need to add this that contains username and pass
+
+---------------------------------------------------
+
+// Folder Structure
+
+  Youtube Backend
+    src
+      -- controllers
+      -- db
+      -- middleware
+      -- models
+      -- routes
+      -- utils
+      -- app.js
+      -- contants.js
+      -- index.js
+    .env
+    .gitignore
+    .preettierrc
+    package.json
+
+---------------------------------------------------
+
+//Packages Installed
+
+  - Nodeman - To restart backend on changes
+  - dotenv - To config .env and make global
+  - preettier - To keep codebase clean
+  - express - To connect searver with database / To send request 
+  - mongoose - To set up/ send data to database
+
+---------------------------------------------------
+
+// app.use
+
+  it is used to change or conf express settings
+
+    app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+    }));
+  
+  // This is used to whitlist urls CORS_ORIGIN
+
+    app.use(express.json({
+      limit: "16kb"
+     }));
+
+    app.use(express.urlencoded({
+      extended: true,
+     limit: "16kb"
+     }));
+
+    // To restrict size of request
+
+    app.use(express.static("public"))
+
+    //To allow use of files in public Folder
+
+    app.use(cookieParser());
+
+    // Helps use to access and edit browser cookie
+
+---------------------------------------------------
+
+// MiddleWares
+
+  Helps us to check if user is capable of sending a request to a url, like logged in user.
+
+---------------------------------------------------
+
+//Error Utils Class
+
+    
+    class ApiError extends Error{
+        constructor(message, statusCode = "Something Went Wrong", errors=[], stack=""){
+            super(message);
+            this.statusCode = statusCode;
+            this.errors = errors;
+            this.message = message;
+            this.stack = stack;
+            this.success = false;
+        
+
+        if (stack){
+            this.stack = stack
+        }
+        else {
+            Error.captureStackTrace(this, this.constructor);
+        }
+    }}
+
+    export default ApiError;
+
+  Extending the Error Class:
+    class ApiError extends Error indicates that ApiError inherits from the built-in Error class, which is the standard way to handle errors in JavaScript.
+
+  Constructor:
+    The constructor method initializes the instance of the ApiError class. It accepts four parameters:
+    message: The error message (a string describing the error).
+    statusCode: The HTTP status code associated with the error (default is "Something Went Wrong").
+    errors: An array to hold any additional error details (default is an empty array).
+    stack: The stack trace of the error (default is an empty string).
+
+  Calling super(message):
+    super(message) calls the constructor of the parent Error class with the message argument. This ensures that the error message is properly set up.
+
+  Instance Properties:
+    this.statusCode = statusCode: Sets the status code of the error.
+    this.errors = errors: Sets additional error details.
+    this.message = message: Explicitly sets the error message.
+    this.stack = stack: Sets the stack trace of the error.
+    this.success = false: A custom property indicating the success status (always false for errors).
+
+  Handling the Stack Trace:
+    The if (stack) block checks if a stack trace is provided. If it is, it sets this.stack to the provided stack trace.
+    Otherwise, it calls Error.captureStackTrace(this, this.constructor), which captures the current stack trace and assigns it to this.stack. This helps in debugging by providing information about where the error occurred.
+
+---------------------------------------------------
+
+
+//Todo->
+1) add token in hashnode
